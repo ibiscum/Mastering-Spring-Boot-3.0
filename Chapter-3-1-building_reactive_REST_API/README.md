@@ -1,3 +1,3 @@
 # Chapter 3.1 - Building Reactive REST API
 
-    ./gradlew wrapper --gradle-version latest
+    gradle wrapper --gradle-version latest
