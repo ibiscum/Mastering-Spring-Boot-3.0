@@ -1,5 +1,8 @@
 # Mastering Spring Boot 3.0
 
+[![CodeQL Advanced](https://github.com/ibiscum/Mastering-Spring-Boot-3.0/actions/workflows/codeql.yml/badge.svg)](https://github.com/ibiscum/Mastering-Spring-Boot-3.0/actions/workflows/codeql.yml)
+[![Dependabot Updates](https://github.com/ibiscum/Mastering-Spring-Boot-3.0/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/ibiscum/Mastering-Spring-Boot-3.0/actions/workflows/dependabot/dependabot-updates)
+
 <a href="https://www.packtpub.com/product/mastering-spring-boot-30/9781803230788"><img src="https://content.packt.com/B18400/cover_image_small.jpg" alt="" height="256px" align="right"></a>
 
 This is the code repository for [Mastering Spring Boot 3.0](https://www.packtpub.com/product/mastering-spring-boot-30/9781803230788), published by Packt.
