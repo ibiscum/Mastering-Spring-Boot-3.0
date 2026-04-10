@@ -5,6 +5,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 @RestController
 public class EventProducerController {
@@ -19,6 +20,7 @@ public class EventProducerController {
     @GetMapping("/message/{message}")
     public String trigger(@PathVariable String message) {
         kafkaTemplate.send("messageTopic", message);
-        return "Hello, Your message has been published: " + message;
+        String safeMessage = HtmlUtils.htmlEscape(message);
+        return "Hello, Your message has been published: " + safeMessage;
     }
 }
