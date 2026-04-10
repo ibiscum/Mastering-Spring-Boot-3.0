@@ -51,10 +51,10 @@ class AuthorControllerTest {
     private WebApplicationContext context;
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private AuthorService authorService;
 
-    @MockBean
+    @MockitoBean
     private JwtDecoder jwtDecoder;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -76,9 +76,9 @@ class AuthorControllerTest {
         when(authorService.createAuthor(any(Author.class))).thenReturn(author);
 
         mockMvc.perform(post("/authors")
-                        .with(user("testUser").roles(role.replace("ROLE_", "")))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(author)))
+                .with(user("testUser").roles(role.replace("ROLE_", "")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(author)))
                 .andDo(print())
                 .andExpect(status().is(expectedStatus.value()));
     }
@@ -86,17 +86,14 @@ class AuthorControllerTest {
     private static Stream<Arguments> provideRolesAndExpectedStatusForAddAuthor() {
         return Stream.of(
                 Arguments.of("ROLE_ADMIN", HttpStatus.OK),
-                Arguments.of("ROLE_USER", HttpStatus.FORBIDDEN)
-        );
+                Arguments.of("ROLE_USER", HttpStatus.FORBIDDEN));
     }
 
     private static Stream<Arguments> provideRolesAndExpectedStatus() {
         return Stream.of(
                 Arguments.of("ROLE_ADMIN", HttpStatus.OK),
-                Arguments.of("ROLE_USER", HttpStatus.OK)
-        );
+                Arguments.of("ROLE_USER", HttpStatus.OK));
     }
-
 
     @ParameterizedTest
     @MethodSource("provideRolesAndExpectedStatus")
@@ -107,7 +104,7 @@ class AuthorControllerTest {
 
         when(authorService.getAuthor(id)).thenReturn(Optional.of(author));
         mockMvc.perform(get("/authors/" + id)
-                        .with(user("testUser").roles(role.replace("ROLE_", ""))))
+                .with(user("testUser").roles(role.replace("ROLE_", ""))))
                 .andExpect(status().is(expectedStatus.value()))
                 .andExpect((result) -> {
                     Author actual = objectMapper.readValue(result.getResponse().getContentAsString(), Author.class);
@@ -115,9 +112,8 @@ class AuthorControllerTest {
                 });
     }
 
-
     @Test
-    @WithMockUser(username="testUser", authorities={"ROLE_USER", "ROLE_ADMIN"})
+    @WithMockUser(username = "testUser", authorities = { "ROLE_USER", "ROLE_ADMIN" })
     void testGetAllAuthors() throws Exception {
         List<Author> authors = Arrays.asList(new Author(), new Author()); // Assuming Author has a no-args constructor
 
@@ -129,7 +125,7 @@ class AuthorControllerTest {
     }
 
     @Test
-    @WithMockUser(username="testUser", authorities={"ROLE_ADMIN"})
+    @WithMockUser(username = "testUser", authorities = { "ROLE_ADMIN" })
     void testUpdateAuthorWithAdminRole() throws Exception {
         Long id = 1L;
         Author updatedAuthor = new Author();
@@ -138,14 +134,14 @@ class AuthorControllerTest {
         when(authorService.updateAuthor(eq(id), any(Author.class))).thenReturn(Optional.of(updatedAuthor));
 
         mockMvc.perform(put("/authors/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedAuthor)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedAuthor)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(updatedAuthor.getName())));
     }
 
     @Test
-    @WithMockUser(username="testUser", authorities={"ROLE_USER"})
+    @WithMockUser(username = "testUser", authorities = { "ROLE_USER" })
     void testUpdateAuthorWithUserRole() throws Exception {
         Long id = 1L;
         Author updatedAuthor = new Author();
@@ -154,14 +150,14 @@ class AuthorControllerTest {
         when(authorService.updateAuthor(eq(id), any(Author.class))).thenReturn(Optional.of(updatedAuthor));
 
         mockMvc.perform(put("/authors/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedAuthor)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedAuthor)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(updatedAuthor.getName())));
     }
 
     @Test
-    @WithMockUser(username="testUser", authorities={"ROLE_ADMIN"})
+    @WithMockUser(username = "testUser", authorities = { "ROLE_ADMIN" })
     void testDeleteAuthorWithAdminRole() throws Exception {
         Long id = 1L;
         doNothing().when(authorService).deleteAuthor(id);
@@ -171,7 +167,7 @@ class AuthorControllerTest {
     }
 
     @Test
-    @WithMockUser(username="testUser", authorities={"ROLE_ADMIN"})
+    @WithMockUser(username = "testUser", authorities = { "ROLE_ADMIN" })
     void testDeleteAuthorNotFoundWithAdminRole() throws Exception {
         Long id = 1L;
 

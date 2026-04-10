@@ -1,42 +1,50 @@
-version: '3.1'
+name: Chapter-5-3
 services:
   db:
-    image: postgres
-    restart: always
+    image: postgres:18.3-alpine3.22
     environment:
       POSTGRES_PASSWORD: yourpassword
       POSTGRES_DB: bookstore
     ports:
-      - "5432:5432"
-  mongodb:
-    image: mongo
+      - '127.0.0.1:5432:5432'
     restart: always
-    ports:
-      - "27017:27017"
+  keycloak:
+    image: keycloak/keycloak:26.6
+    depends_on:
+      - keycloak_db
     environment:
-      MONGO_INITDB_DATABASE: bookstore
-  keycloak_db:
-    image: postgres
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak_db
+      DB_PORT: 5434
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloakpassword
+      KC_HEALTH_ENABLED: "true"
+      KC_LOG_LEVEL: info
+    ports:
+      - '127.0.0.1:8180:8080'
+    command: [ "start-dev" ]
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8180/health/ready" ]
+      interval: 15s
+      timeout: 2s
+      retries: 15
+  keycloak_db:
+    image: postgres:18.3-alpine3.22
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloakpassword
     ports:
-      - "5433:5432"
-  keycloak:
-    image: bitnami/keycloak:latest
+      - '127.0.0.1:5434:5434'
     restart: always
+  mongodb:
+    image: mongodb/mongodb-community-server:8.2-ubi8-slim
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: POSTGRES
-      DB_ADDR: keycloak_db
-      DB_PORT: 5432
-      DB_DATABASE: keycloak
-      DB_USER: keycloak
-      DB_PASSWORD: keycloakpassword
+      MONGO_INITDB_DATABASE: bookstore
     ports:
-      - "8180:8080"
-    depends_on:
-      - keycloak_db
+      - '127.0.0.1:27017:27017'
+    restart: always

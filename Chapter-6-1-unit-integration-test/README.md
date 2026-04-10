@@ -1,4 +1,4 @@
-# Chapter 5.2 - Implementing OAuth2 JWT
+# Chapter 6.1 - Unit Integration Test
 
     gradle wrapper --gradle-version latest
 

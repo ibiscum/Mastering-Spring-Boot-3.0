@@ -7,4 +7,3 @@ import reactor.core.publisher.Mono;
 public interface UserRepository extends R2dbcRepository<User, String> {
     Mono<User> findByEmail(String email);
 }
-

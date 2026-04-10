@@ -1,4 +1,4 @@
-# Chapter 5.2 - Implementing OAuth2 JWT
+# Chapter 5.4 - Security Reactive
 
     gradle wrapper --gradle-version latest
 

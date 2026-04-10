@@ -1,14 +1,14 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.5'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '3.5.13'
 }
 
+apply plugin: 'io.spring.dependency-management'
 group = 'com.packt.ahmeric'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '25'
 }
 
 repositories {
@@ -33,10 +33,6 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql:1.19.7'
     testImplementation 'org.testcontainers:mongodb:1.19.7'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.1.1'
-
-
-
-
 }
 
 tasks.named('test') {

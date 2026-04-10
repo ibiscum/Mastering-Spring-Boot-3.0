@@ -1,4 +1,4 @@
-# Chapter 5.2 - Implementing OAuth2 JWT
+# Chapter 5.3 - Role Based Security
 
     gradle wrapper --gradle-version latest
 
