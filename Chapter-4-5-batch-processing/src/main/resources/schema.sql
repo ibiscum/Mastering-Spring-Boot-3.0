@@ -1,35 +1,33 @@
-CREATE TABLE BATCH_JOB_INSTANCE  (
-                                     JOB_INSTANCE_ID BIGINT  NOT NULL PRIMARY KEY ,
-                                     VERSION BIGINT ,
-                                     JOB_NAME VARCHAR(100) NOT NULL,
-                                     JOB_KEY VARCHAR(32) NOT NULL,
-                                     constraint JOB_INST_UN unique (JOB_NAME, JOB_KEY)
+CREATE TABLE BATCH_JOB_INSTANCE (
+  JOB_INSTANCE_ID BIGINT NOT NULL PRIMARY KEY,
+  VERSION BIGINT,
+  JOB_NAME VARCHAR(100) NOT NULL,
+  JOB_KEY VARCHAR(32) NOT NULL,
+  constraint JOB_INST_UN unique (JOB_NAME, JOB_KEY)
 ) ;
 
-CREATE TABLE BATCH_JOB_EXECUTION  (
-                                      JOB_EXECUTION_ID BIGINT  NOT NULL PRIMARY KEY ,
-                                      VERSION BIGINT  ,
-                                      JOB_INSTANCE_ID BIGINT NOT NULL,
-                                      CREATE_TIME TIMESTAMP NOT NULL,
-                                      START_TIME TIMESTAMP DEFAULT NULL ,
-                                      END_TIME TIMESTAMP DEFAULT NULL ,
-                                      STATUS VARCHAR(10) ,
-                                      EXIT_CODE VARCHAR(2500) ,
-                                      EXIT_MESSAGE VARCHAR(2500) ,
-                                      LAST_UPDATED TIMESTAMP,
-                                      constraint JOB_INST_EXEC_FK foreign key (JOB_INSTANCE_ID)
-                                          references BATCH_JOB_INSTANCE(JOB_INSTANCE_ID)
-) ;
+CREATE TABLE BATCH_JOB_EXECUTION (
+  JOB_EXECUTION_ID BIGINT NOT NULL PRIMARY KEY,
+  VERSION BIGINT,
+  JOB_INSTANCE_ID BIGINT NOT NULL,
+  CREATE_TIME TIMESTAMP NOT NULL,
+  START_TIME TIMESTAMP DEFAULT NULL,
+  END_TIME TIMESTAMP DEFAULT NULL,
+  STATUS VARCHAR(10),
+  EXIT_CODE VARCHAR(2500),
+  EXIT_MESSAGE VARCHAR(2500),
+  LAST_UPDATED TIMESTAMP,
+  constraint JOB_INST_EXEC_FK foreign key (JOB_INSTANCE_ID) references BATCH_JOB_INSTANCE(JOB_INSTANCE_ID)
+);
 
-CREATE TABLE BATCH_JOB_EXECUTION_PARAMS  (
-                                             JOB_EXECUTION_ID BIGINT NOT NULL ,
-                                             PARAMETER_NAME VARCHAR(100) NOT NULL ,
-                                             PARAMETER_TYPE VARCHAR(100) NOT NULL ,
-                                             PARAMETER_VALUE VARCHAR(2500) ,
-                                             IDENTIFYING CHAR(1) NOT NULL ,
-                                             constraint JOB_EXEC_PARAMS_FK foreign key (JOB_EXECUTION_ID)
-                                                 references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
-) ;
+CREATE TABLE BATCH_JOB_EXECUTION_PARAMS (
+  JOB_EXECUTION_ID BIGINT NOT NULL,
+  PARAMETER_NAME VARCHAR(100) NOT NULL,
+  PARAMETER_TYPE VARCHAR(100) NOT NULL,
+  PARAMETER_VALUE VARCHAR(2500),
+  IDENTIFYING CHAR(1) NOT NULL,
+  constraint JOB_EXEC_PARAMS_FK foreign key (JOB_EXECUTION_ID) references BATCH_JOB_EXECUTION(JOB_EXECUTION_ID)
+);
 
 CREATE TABLE BATCH_STEP_EXECUTION  (
                                        STEP_EXECUTION_ID BIGINT  NOT NULL PRIMARY KEY ,

@@ -43,7 +43,6 @@ public class BatchConfig {
                 .build();
     }
 
-
     @Bean
     public ItemProcessor<Publisher, Publisher> processor() {
         return publisher -> {
