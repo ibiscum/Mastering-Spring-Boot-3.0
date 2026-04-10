@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 1
+      id: "1"
       author: ahmeric
       changes:
         - addColumn:
@@ -9,4 +9,4 @@ databaseChangeLog:
               - column:
                   name: published
                   type: boolean
-                  defaultValue: false
+                  defaultValue: "false"
