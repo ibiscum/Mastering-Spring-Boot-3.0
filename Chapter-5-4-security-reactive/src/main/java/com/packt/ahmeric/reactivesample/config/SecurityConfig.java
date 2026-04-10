@@ -31,7 +31,6 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
         http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers("/login").permitAll()
                         .pathMatchers(HttpMethod.POST, "/users").hasAuthority("ROLE_ADMIN")
