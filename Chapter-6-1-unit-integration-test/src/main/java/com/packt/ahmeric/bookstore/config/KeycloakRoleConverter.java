@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.lang.Nullable;
 
 public class KeycloakRoleConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
@@ -32,6 +33,7 @@ public class KeycloakRoleConverter implements Converter<Jwt, AbstractAuthenticat
 
         return new AbstractAuthenticationToken(combinedAuthorities) {
             @Override
+            @Nullable
             public Object getCredentials() {
                 return null;
             }
