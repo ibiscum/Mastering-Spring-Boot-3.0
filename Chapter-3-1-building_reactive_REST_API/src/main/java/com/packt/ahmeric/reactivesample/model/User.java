@@ -13,7 +13,7 @@ public record User(
         String name,
         @JsonProperty("email")
         String email
-) {
+    ) {
 }
 
 

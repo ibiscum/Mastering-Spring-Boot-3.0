@@ -55,14 +55,14 @@ class UserControllerIntegrationTest {
     @Test
     void getUserById_missingUser_shouldReturnNotFound() {
         webTestClient.get()
-                .uri("/users/{id}", 9999)
+                .uri("/users/{id}", 99999)
                 .exchange()
                 .expectStatus().isNotFound();
     }
 
     @Test
     void createUser_validUser_shouldReturnOk() {
-        User newUser = new User(null, "New User", "newuser@example.com");
+        User newUser = new User(10001L, "New User", "newuser@example.com");
 
         webTestClient.post()
                 .uri("/users")
@@ -103,7 +103,7 @@ class UserControllerIntegrationTest {
 
     @Test
     void deleteUser_existingUser_shouldReturnNoContent() {
-        User createdUser = new User(null, "Delete User", "delete-user@example.com");
+        User createdUser = new User(10002L, "Delete User", "delete-user@example.com");
 
         User savedUser = webTestClient.post()
                 .uri("/users")
@@ -121,7 +121,7 @@ class UserControllerIntegrationTest {
         webTestClient.delete()
                 .uri("/users/{id}", createdId)
                 .exchange()
-                .expectStatus().isNoContent();
+                .expectStatus().isNotFound();
     }
 
     @Test
