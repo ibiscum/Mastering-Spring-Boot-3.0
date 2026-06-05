@@ -54,8 +54,13 @@ public class UserController {
         }
 
         return userRepository.findByEmail(user.email())
-                .flatMap(existingUser -> Mono.error(new EmailUniquenessException("Email already exists!")))
-                .then(userRepository.save(user))
+                .hasElement()
+                .flatMap(emailExists -> {
+                    if (emailExists) {
+                        return Mono.error(new EmailUniquenessException("Email already exists!"));
+                    }
+                    return userRepository.save(user);
+                })
                 .map(ResponseEntity::ok)
                 .doOnNext(savedUser -> log.info("New user created: {}", savedUser))
                 .onErrorResume(EmailUniquenessException.class,
@@ -72,11 +77,15 @@ public class UserController {
                 .flatMap(exists -> {
                     if (exists) {
                         return userRepository.deleteById(id)
-                                .thenReturn(ResponseEntity.noContent().<Void>build());
+                                .then(Mono.just(ResponseEntity.noContent().<Void>build()));
                     }
                     return Mono.just(ResponseEntity.notFound().<Void>build());
                 })
-                .doOnError(error -> log.error("Error deleting user", error));
+                .doOnError(error -> log.error("Error deleting user", error))
+                .onErrorResume(e -> {
+                    log.error("Exception during delete operation", e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+                });
     }
 
     @GetMapping("/stream")
