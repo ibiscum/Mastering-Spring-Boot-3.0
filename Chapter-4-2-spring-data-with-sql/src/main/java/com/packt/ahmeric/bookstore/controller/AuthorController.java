@@ -2,10 +2,14 @@ package com.packt.ahmeric.bookstore.controller;
 
 import com.packt.ahmeric.bookstore.data.Author;
 import com.packt.ahmeric.bookstore.repositories.AuthorRepository;
+
+
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,18 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/authors")
+
 @RequiredArgsConstructor
 public class AuthorController {
     private final AuthorRepository authorRepository;
 
     @PostMapping
-    public ResponseEntity<Author> addBook(@RequestBody Author author) {
+    public ResponseEntity<Author> addBook(@RequestBody @NonNull Author author) {
         Author savedAuthor = authorRepository.save(author);
         return ResponseEntity.ok(savedAuthor);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> getBook(@PathVariable Long id) {
+    public @Nullable ResponseEntity<Author> getBook(@PathVariable @NonNull Long id) {
         Optional<Author> author = authorRepository.findById(id);
         return author.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,7 +44,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
+    public ResponseEntity<Author> updateAuthor(@PathVariable @NonNull Long id, @RequestBody @NonNull Author author) {
         return authorRepository.findById(id)
                 .map(existingAuthor -> {
                     existingAuthor.setName(author.getName());
@@ -52,9 +57,9 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteAuthor(@PathVariable Long id) {
+    public ResponseEntity<Object> deleteAuthor(@PathVariable @NonNull Long id) {
         return authorRepository.findById(id)
-                .map(author -> {
+                .map((@NonNull Author author) -> {
                     authorRepository.delete(author);
                     return ResponseEntity.ok().build();
                 })

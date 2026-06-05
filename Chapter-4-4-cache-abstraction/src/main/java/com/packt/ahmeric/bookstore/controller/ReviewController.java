@@ -5,6 +5,7 @@ import com.packt.ahmeric.bookstore.data.Review;
 import com.packt.ahmeric.bookstore.repositories.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +18,13 @@ public class ReviewController {
     private final ReviewRepository reviewRepository;
 
     @PostMapping
-    public ResponseEntity<Review> addReview(@RequestBody Review review) {
+    public ResponseEntity<Review> addReview(@RequestBody @NonNull Review review) {
         Review savedReview = reviewRepository.save(review);
         return ResponseEntity.ok(savedReview);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReview(@PathVariable String id) {
+    public ResponseEntity<Review> getReview(@PathVariable @NonNull String id) {
         Optional<Review> review = reviewRepository.findById(id);
         return review.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -5,6 +5,7 @@ import com.packt.ahmeric.bookstore.data.Review;
 import com.packt.ahmeric.bookstore.repositories.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +19,15 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity<Review> addReview(@RequestBody Review review) {
+        if (review == null) {
+            return ResponseEntity.badRequest().build();
+        }
         Review savedReview = reviewRepository.save(review);
         return ResponseEntity.ok(savedReview);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Review> getReview(@PathVariable String id) {
+    public ResponseEntity<Review> getReview(@PathVariable @NonNull String id) {
         Optional<Review> review = reviewRepository.findById(id);
         return review.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -34,7 +38,10 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable String id, @RequestBody Review reviewDetails) {
+    public ResponseEntity<Review> updateReview(@PathVariable @NonNull String id, @RequestBody Review reviewDetails) {
+        if (reviewDetails == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return reviewRepository.findById(id)
                 .map(existingReview -> {
                     existingReview.setBookId(reviewDetails.getBookId());
@@ -48,9 +55,9 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteReview(@PathVariable String id) {
+    public ResponseEntity<Object> deleteReview(@PathVariable @NonNull String id) {
         return reviewRepository.findById(id)
-                .map(review -> {
+                .map((@NonNull Review review) -> {
                     reviewRepository.delete(review);
                     return ResponseEntity.ok().build();
                 })

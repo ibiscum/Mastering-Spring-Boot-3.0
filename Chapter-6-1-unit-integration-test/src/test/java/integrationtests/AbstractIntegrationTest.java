@@ -47,13 +47,11 @@ public abstract class AbstractIntegrationTest {
                 .withDatabaseName(DATABASE_NAME)
                 .withUsername(DATABASE_USER)
                 .withPassword(DATABASE_PASSWORD);
-        container.start();
         return container;
     }
 
     private static MongoDBContainer initMongoDBContainer() {
         MongoDBContainer container = new MongoDBContainer(DockerImageName.parse(MONGO_IMAGE));
-        container.start();
         return container;
     }
 

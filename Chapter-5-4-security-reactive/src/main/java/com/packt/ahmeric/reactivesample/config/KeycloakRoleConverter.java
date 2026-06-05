@@ -3,6 +3,7 @@ package com.packt.ahmeric.reactivesample.config;
 import java.util.Collections;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,7 +19,7 @@ import reactor.core.publisher.Flux;
 public class KeycloakRoleConverter implements Converter<Jwt, Flux<GrantedAuthority>> {
 
     @Override
-    public Flux<GrantedAuthority> convert(final Jwt jwt) {
+    public Flux<GrantedAuthority> convert(final @NonNull Jwt jwt) {
         // Extracting roles from realm_access
         return Flux.fromIterable(getRolesFromToken(jwt))
                 .map(roleName -> "ROLE_" + roleName.toUpperCase()) // Prefixing role with ROLE_
@@ -31,12 +32,21 @@ public class KeycloakRoleConverter implements Converter<Jwt, Flux<GrantedAuthori
             return Collections.emptyList();
         }
 
-        List<String> roles = (List<String>) realmAccess.get("roles");
-        if (roles == null) {
+        Object rolesObj = realmAccess.get("roles");
+        if (!(rolesObj instanceof List)) {
             return Collections.emptyList();
         }
 
-        return roles;
+        List<?> rawList = (List<?>) rolesObj;
+        if (rawList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Safely convert elements to String, ignore non-string entries
+        return rawList.stream()
+                .filter(item -> item instanceof String)
+                .map(item -> (String) item)
+                .collect(Collectors.toList());
     }
 }
 
