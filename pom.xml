@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.example</groupId>
+  <artifactId>book</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>Mastering Spring Boot 3.0</name>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>Chapter-3-1-building_reactive_REST_API</module>
+    <module>Chapter-3-2-implement_back-pressure</module>
+  </modules>
+
+</project>
