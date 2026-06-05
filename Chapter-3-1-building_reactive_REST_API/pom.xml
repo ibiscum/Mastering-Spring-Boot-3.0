@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>25</java.version>
+        <netty.version>4.2.13.Final</netty.version>
     </properties>
 
     <dependencies>
@@ -60,7 +61,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Reactor Test Tooling (Provides StepVerifier for blocking/testing Flux & Mono) -->
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
@@ -75,14 +75,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <useSystemClassLoader>true</useSystemClassLoader>
-                </configuration>
-            </plugin> -->
         </plugins>
     </build>
 </project>
