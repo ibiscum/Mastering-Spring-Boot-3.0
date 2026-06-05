@@ -13,12 +13,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 public class KeycloakRoleConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
+    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         // Default converter for scopes/authorities
         JwtGrantedAuthoritiesConverter defaultAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         Collection<GrantedAuthority> defaultAuthorities = defaultAuthoritiesConverter.convert(jwt);
@@ -51,12 +53,15 @@ public class KeycloakRoleConverter implements Converter<Jwt, AbstractAuthenticat
             return Collections.emptyList();
         }
 
-        List<String> roles = (List<String>) realmAccess.get("roles");
-        if (roles == null) {
+        Object rolesObject = realmAccess.get("roles");
+        if (!(rolesObject instanceof List<?>)) {
             return Collections.emptyList();
         }
 
+        List<?> roles = (List<?>) rolesObject;
         return roles.stream()
+                .filter(String.class::isInstance)
+                .map(String.class::cast)
                 .map(roleName -> new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()))
                 .collect(Collectors.toList());
     }

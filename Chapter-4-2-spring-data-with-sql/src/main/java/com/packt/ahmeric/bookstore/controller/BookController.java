@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,13 +23,13 @@ public class BookController {
     private final BookRepository bookRepository;
 
     @PostMapping
-    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+    public ResponseEntity<Book> addBook(@RequestBody @NonNull Book book) {
         Book savedBook = bookRepository.save(book);
         return ResponseEntity.ok(savedBook);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable Long id) {
+    public ResponseEntity<Book> getBook(@PathVariable @NonNull Long id) {
         Optional<Book> book = bookRepository.findById(id);
         return book.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,7 +40,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Long id, @RequestBody Book book) {
+    public ResponseEntity<Book> updateBook(@PathVariable @NonNull Long id, @RequestBody Book book) {
         return bookRepository.findById(id)
                 .map(existingBook -> {
                     existingBook.setIsbn(book.getIsbn());
@@ -52,7 +53,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable @NonNull Long id) {
         if (bookRepository.existsById(id)) {
             bookRepository.deleteById(id);
             return ResponseEntity.ok().build();

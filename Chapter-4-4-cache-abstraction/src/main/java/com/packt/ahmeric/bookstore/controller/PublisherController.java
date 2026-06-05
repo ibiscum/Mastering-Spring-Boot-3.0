@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,13 +23,13 @@ public class PublisherController {
     private final PublisherRepository publisherRepository;
 
     @PostMapping
-    public ResponseEntity<Publisher> addBook(@RequestBody Publisher publisher) {
+    public ResponseEntity<Publisher> addBook(@RequestBody @NonNull Publisher publisher) {
         Publisher savedPublisher = publisherRepository.save(publisher);
         return ResponseEntity.ok(savedPublisher);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Publisher> getBook(@PathVariable Long id) {
+    public ResponseEntity<Publisher> getBook(@PathVariable @NonNull Long id) {
         Optional<Publisher> publisher = publisherRepository.findById(id);
         return publisher.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,7 +40,7 @@ public class PublisherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Publisher> updatePublisher(@PathVariable Long id, @RequestBody Publisher publisher) {
+    public ResponseEntity<Publisher> updatePublisher(@PathVariable @NonNull Long id, @RequestBody Publisher publisher) {
         return publisherRepository.findById(id)
                 .map(existingPublisher -> {
                     existingPublisher.setName(publisher.getName());
@@ -51,7 +52,7 @@ public class PublisherController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePublisher(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePublisher(@PathVariable @NonNull Long id) {
         if (publisherRepository.existsById(id)) {
             publisherRepository.deleteById(id);
             return ResponseEntity.ok().build();
