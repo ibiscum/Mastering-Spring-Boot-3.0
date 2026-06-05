@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,42 +39,51 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Mono<User> getUserById(@PathVariable String id) {
+    public Mono<ResponseEntity<User>> getUserById(@PathVariable Long id) {
         return userRepository.findById(id)
-                .doOnSuccess(user -> log.info("Found user: " + user))
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build())
                 .doOnError(error -> log.error("Error finding user", error));
     }
 
     @PostMapping
     public Mono<ResponseEntity<User>> createUser(@RequestBody User user) {
+        if (user == null || !StringUtils.hasText(user.name()) || !StringUtils.hasText(user.email())) {
+            log.warn("Invalid user creation request: {}", user);
+            return Mono.just(ResponseEntity.badRequest().build());
+        }
+
         return userRepository.findByEmail(user.email())
                 .flatMap(existingUser -> Mono.error(new EmailUniquenessException("Email already exists!")))
-                .then(userRepository.save(user)) // Save the new user if the email doesn't exist
-                .map(ResponseEntity::ok) // Map the saved user to a ResponseEntity
-                .doOnNext(savedUser -> System.out.println("New user created: " + savedUser)) // Logging or further action
-                .onErrorResume(e -> { // Handling errors, such as email uniqueness violation
-                    System.out.println("An exception has occured: " + e.getMessage());
-                    if (e instanceof EmailUniquenessException) {
-                        return Mono.just(ResponseEntity
-                                .status(HttpStatus.CONFLICT).build());
-                    } else {
-                        return Mono.just(ResponseEntity
-                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .build());
-                    }
+                .then(userRepository.save(user))
+                .map(ResponseEntity::ok)
+                .doOnNext(savedUser -> log.info("New user created: {}", savedUser))
+                .onErrorResume(EmailUniquenessException.class,
+                        e -> Mono.just(ResponseEntity.status(HttpStatus.CONFLICT).build()))
+                .onErrorResume(e -> {
+                    log.error("Unexpected error creating user", e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
                 });
     }
 
     @DeleteMapping("/{id}")
-    public Mono<Void> deleteUser(@PathVariable String id) {
-        return userRepository.deleteById(id);
+    public Mono<ResponseEntity<Void>> deleteUser(@PathVariable Long id) {
+        return userRepository.existsById(id)
+                .flatMap(exists -> {
+                    if (exists) {
+                        return userRepository.deleteById(id)
+                                .thenReturn(ResponseEntity.noContent().<Void>build());
+                    }
+                    return Mono.just(ResponseEntity.notFound().<Void>build());
+                })
+                .doOnError(error -> log.error("Error deleting user", error));
     }
 
     @GetMapping("/stream")
     public Flux<User> streamUsers() {
         long start = System.currentTimeMillis();
         return userRepository.findAll()
-                .onBackpressureBuffer()  // Buffer strategy for back-pressure
+                .onBackpressureBuffer()
                 .doOnNext(user -> log.debug("Processed User: {} in {} ms", user.name(), System.currentTimeMillis() - start))
                 .doOnError(error -> log.error("Error streaming users", error))
                 .doOnComplete(() -> log.info("Finished streaming users for streamUsers in {} ms", System.currentTimeMillis() - start));
