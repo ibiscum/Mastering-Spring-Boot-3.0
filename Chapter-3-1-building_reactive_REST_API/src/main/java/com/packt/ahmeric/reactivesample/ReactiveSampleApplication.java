@@ -23,7 +23,7 @@ public class ReactiveSampleApplication {
     ApplicationRunner databaseInitializationLogger(ConnectionFactory connectionFactory) {
         return args -> {
             DatabaseClient client = DatabaseClient.create(connectionFactory);
-            Long userCount = client.sql("SELECT COUNT(*) FROM users")
+            Long userCount = client.sql("SELECT COUNT(*) FROM USERS")
                     .map((row, rowMetadata) -> row.get(0, Long.class))
                     .one()
                     .onErrorResume(error -> {
