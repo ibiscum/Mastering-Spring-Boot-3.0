@@ -1,6 +1,8 @@
-# Chapter 4.1 - Introducing Spring Data
+# 4-1 - Introducing Spring Data
 
-    gradle wrapper --gradle-version latest
+    mvn -N wrapper:wrapper -Dmaven=3.9.15
+    ./mvnw clean install -U
+    ./mvnw spring-boot:run
 
     docker run -t --rm -v ${PWD}:/app zavoloklom/dclint .
 
