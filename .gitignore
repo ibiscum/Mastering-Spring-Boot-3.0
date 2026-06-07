@@ -1,6 +1,11 @@
 HELP.md
 .gradle
 build/
+bin/
+logs/
+tmp/
+out/
+target/
 
 ### STS ###
 .apt_generated
@@ -10,14 +15,12 @@ build/
 .settings
 .springBeans
 .sts4-cache
-bin/
 
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
-out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -28,6 +31,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-### Maven ###
-target/

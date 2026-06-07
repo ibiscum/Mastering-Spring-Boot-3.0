@@ -1,10 +1,10 @@
-# Chapter 4.2 - Spring Data with SQL
+# 4-2 - Spring Data with SQL
 
-    gradle wrapper --gradle-version latest
+    mvn -N wrapper:wrapper -Dmaven=3.9.15
+    ./mvnw clean install -U
+    ./mvnw spring-boot:run
 
     docker run -t --rm -v ${PWD}:/app zavoloklom/dclint .
-
-    ./gradlew bootRun
 
     curl -v http://localhost:8080/books
     curl -v http://localhost:8080/publishers -H "Content-Type: application/json" -d '{"name": "Publisher Name", "address": "Address of the publisher"}'
