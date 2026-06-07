@@ -1,5 +1,6 @@
 package com.packt.ahmeric.bookstore.data;
 
+import com.packt.ahmeric.bookstore.data.Publisher;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
